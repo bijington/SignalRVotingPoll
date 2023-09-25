@@ -3,8 +3,6 @@ namespace SignalRVotingPoll
 {
 	public class VoteState
 	{
-        public bool CheatMode = true;
-
         public Dictionary<int, int> Votes
         {
             get;

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace SignalRVotingPoll.Hubs
 {
@@ -12,9 +11,8 @@ namespace SignalRVotingPoll.Hubs
             _voteState = voteState;
         }
 
-        public async Task DisableCheatMode()
+        public async Task OpenVoting()
         {
-            _voteState.CheatMode = false;
             _voteState.Votes[0] = 0;
             _voteState.Votes[1] = 0;
 
@@ -27,9 +25,6 @@ namespace SignalRVotingPoll.Hubs
             // TODO implement server-side user identification to prevent duplicate votes
 
             int opt = option;
-
-            if (_voteState.CheatMode)
-                opt = 0;
 
             _voteState.Votes[opt]++;
 
