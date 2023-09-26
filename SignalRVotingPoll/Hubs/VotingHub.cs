@@ -1,35 +1,52 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace SignalRVotingPoll.Hubs
+namespace SignalRVotingPoll.Hubs;
+
+public class VotingHub : Hub
 {
-	public class VotingHub : Hub
-	{
-        private readonly VoteState _voteState;
+    private static VoteState _voteState = new VoteState();
 
-        public VotingHub(VoteState voteState)
+    public VotingHub()
+    {
+    }
+
+    public async Task OpenVoting(VoteState voteState)
+    {
+        _voteState = voteState;
+
+        _voteState.Votes[0] = 0;
+        _voteState.Votes[1] = 0;
+        _voteState.IsOpen = true;
+
+        await Clients.All.SendAsync("Status", _voteState);
+        await Clients.All.SendAsync("UpdateVotes", _voteState.Votes);
+    }
+
+    public async Task GetVotingStatus()
+    {
+        await Clients.All.SendAsync("Status", _voteState);
+    }
+
+    public async Task CloseVoting()
+    {
+        _voteState.IsOpen = false;
+
+        await Clients.All.SendAsync("Status", _voteState);
+    }
+
+    public async Task SendVote(int option)
+    {
+        // TODO implement server-side user identification to prevent duplicate votes
+        if (_voteState.IsOpen is false)
         {
-            _voteState = voteState;
+            return;
         }
 
-        public async Task OpenVoting()
-        {
-            _voteState.Votes[0] = 0;
-            _voteState.Votes[1] = 0;
+        int opt = option;
 
-            await Clients.All.SendAsync("Reset", _voteState.Votes);
-            await Clients.All.SendAsync("UpdateVotes", _voteState.Votes);
-        }
+        _voteState.Votes[opt] += 1;
 
-        public async Task SendVote(int option)
-        {
-            // TODO implement server-side user identification to prevent duplicate votes
-
-            int opt = option;
-
-            _voteState.Votes[opt]++;
-
-            await Clients.All.SendAsync("UpdateVotes", _voteState.Votes);
-        }
+        await Clients.All.SendAsync("UpdateVotes", _voteState.Votes);
     }
 }
 
