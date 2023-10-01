@@ -42,6 +42,10 @@ connection.on("Reset", function () {
     document.getElementById("option2Button").disabled = false;
 });
 
+connection.on("Congratulations", function () {
+    document.getElementById("statusLabel").innerText = "🏆 Congratulations you have been chosen at random to win the prize on offer. Come down and collect your prize!";
+});
+
 document.getElementById("option2Button").addEventListener("click", function (event) {
     connection.invoke("SendVote", 1).catch(function (err) {
         return console.error(err.toString());

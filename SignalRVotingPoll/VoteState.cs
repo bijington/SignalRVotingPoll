@@ -10,6 +10,8 @@ public class VoteState
 
     public bool IsOpen { get; set; }
 
+    public bool SelectWinner { get; set; }
+
     public Dictionary<int, int> Votes
     {
         get;
